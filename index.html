@@ -1103,7 +1103,18 @@ if(IS_LOCAL){
 }
 
 // Expose globals
-window.showPg=showPg; window.toggleDD=toggleDD; window.syncFilter=syncFilter; window.clearFilters=clearFilters; window.populateFYDropdown=populateFYDropdown; window.startLogin=startLogin; window.logout=logout;
+// Attach login button via addEventListener — avoids ES module global scope timing issue
+document.addEventListener('DOMContentLoaded', ()=>{
+  const lb = document.getElementById('login-btn');
+  if(lb) lb.addEventListener('click', startLogin);
+  const ph = document.getElementById('login-phone');
+  if(ph) ph.addEventListener('keydown', e=>{ if(e.key==='Enter') startLogin(); });
+});
+
+// Expose all other functions for onclick attributes
+window.showPg=showPg; window.toggleDD=toggleDD; window.syncFilter=syncFilter;
+window.clearFilters=clearFilters; window.populateFYDropdown=populateFYDropdown;
+window.startLogin=startLogin; window.logout=logout;
 window.submitEsc=submitEsc; window.resetRaise=resetRaise; window.openWA=openWA; window.sendWA=sendWA; window.quickWA=quickWA;
 window.openAckM=openAckM; window.submitAck=submitAck;
 window.openStatusM=openStatusM; window.saveStatus=saveStatus; window.updateField=updateField;
@@ -1305,9 +1316,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div id="step-phone">
       <label class="login-label">Mobile Number</label>
       <input type="tel" id="login-phone" class="login-input" placeholder="e.g. 9876543210" inputmode="numeric"
-        onkeydown="if(event.key==='Enter') startLogin()"
         onfocus="const e=document.getElementById('login-error');if(e)e.style.display='none'">
-      <button class="login-btn" id="login-btn" onclick="startLogin()">Login</button>
+      <button class="login-btn" id="login-btn">Login</button>
       <div id="login-error" style="display:none;background:#FCE4D6;color:#843C0C;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:10px;font-weight:500"></div>
       <div class="login-note">Enter your registered 10-digit mobile number.<br>No OTP required — your number is your identity.</div>
     </div>

@@ -9,7 +9,6 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { getFirestore, collection, doc, addDoc, updateDoc, getDocs, setDoc, onSnapshot, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -22,12 +21,10 @@ const firebaseConfig = {
 };
 
 const fbApp = initializeApp(firebaseConfig);
-const auth  = getAuth(fbApp);
 const db    = getFirestore(fbApp);
 
 // ── GLOBALS ────────────────────────────────────────────────────────────────────
 let currentUser = null, currentProfile = null;
-let recaptchaVerifier = null, confirmResult = null;
 let allEscalations = [], allUsers = [];
 let waMsg = '', waNumber = '', lastEscId = null;
 let editingUserId = null, currentModalEscId = null, currentAckEscId = null;
@@ -204,17 +201,22 @@ async function loadUsers(){
 async function seedUsersIfNeeded(){
   if(IS_LOCAL) return;
   const snap = await getDocs(collection(db,'users'));
-  if(snap.size > 2) return; // already seeded (more than just CEO+Prasad)
-  showToast('Setting up user database — first time only...');
+  const existingPhones = new Set(snap.docs.map(d=>d.id));
+  // Count how many SEED_USERS are already in Firestore
+  const alreadySeeded = SEED_USERS.filter(u=>existingPhones.has(u.phone)).length;
+  // If more than 90% of seed users already exist — skip
+  if(alreadySeeded > SEED_USERS.length * 0.9) return;
+  showToast('Adding users to system — please wait...');
+  let added = 0;
   for(const u of SEED_USERS){
-    // Don't overwrite CEO and Prasad who were manually added
-    const exists = snap.docs.find(d=>d.id===u.phone);
-    if(!exists){
+    // Never overwrite existing entries — preserve any manual edits
+    if(!existingPhones.has(u.phone)){
       await setDoc(doc(db,'users',u.phone), u);
+      added++;
     }
   }
   await loadUsers();
-  showToast('All '+SEED_USERS.length+' users added to system');
+  if(added > 0) showToast(added+' new users added to system');
 }
 
 function subscribeEscalations(){
@@ -265,72 +267,51 @@ async function removeUser(phone){
 
 // ── AUTH ───────────────────────────────────────────────────────────────────────
 async function startLogin(){
+  if(IS_LOCAL){ initDemoMode(); return; }
   const raw = document.getElementById('login-phone').value.trim().replace(/\s/g,'');
-  if(raw.length<10){ showToast('Enter a valid mobile number'); return; }
-  const phone = raw.startsWith('+')?raw:'+91'+raw.replace(/^0+/,'');
-  const loginBtn = document.getElementById('login-btn');
-  loginBtn.disabled=true; loginBtn.textContent='Sending OTP...';
-  try{
-    if(!recaptchaVerifier){
-      recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha-container',{
-        size:'normal',
-        callback:()=>{ console.log('reCAPTCHA solved'); },
-        'expired-callback':()=>{ recaptchaVerifier=null; showToast('reCAPTCHA expired. Try again.'); }
-      });
-      await recaptchaVerifier.render();
-    }
-    confirmResult = await signInWithPhoneNumber(auth, phone, recaptchaVerifier);
-    document.getElementById('step-phone').style.display='none';
-    document.getElementById('step-otp').style.display='block';
-    showToast('OTP sent to '+phone);
-  }catch(e){
-    console.error('Auth error:',e.code, e.message);
-    let msg = 'Error: '+e.message;
-    if(e.code==='auth/unauthorized-domain') msg='Domain not authorized in Firebase. Add brijesh-awpl.github.io in Firebase Console > Authentication > Authorized domains.';
-    if(e.code==='auth/too-many-requests') msg='Too many attempts. Wait a few minutes.';
-    showToast(msg);
-    loginBtn.disabled=false; loginBtn.textContent='Send OTP';
-    if(recaptchaVerifier){ try{recaptchaVerifier.clear();}catch(x){} recaptchaVerifier=null; }
-  }
-}
+  if(raw.length<10){ showToast('Enter a valid 10-digit mobile number'); return; }
+  // Normalise to 91XXXXXXXXXX
+  let phone = raw.replace(/^\+/,'').replace(/^0+/,'');
+  if(!phone.startsWith('91')) phone = '91'+phone;
 
-async function verifyOTP(){
-  const otp = document.getElementById('login-otp').value.trim();
-  if(otp.length!==6){ showToast('Enter the 6-digit OTP'); return; }
-  const btn = document.getElementById('otp-btn');
-  btn.disabled=true; btn.textContent='Verifying...';
+  const btn = document.getElementById('login-btn');
+  btn.disabled=true; btn.textContent='Logging in...';
+
   try{
-    const cred = await confirmResult.confirm(otp);
-    currentUser = cred.user;
-    const phone = currentUser.phoneNumber.replace('+','');
     await loadUsers();
-    const profile = allUsers.find(u=>u.phone===phone||u.phone===phone.replace(/^91/,''));
+    const profile = allUsers.find(u=>
+      u.phone===phone ||
+      u.phone===phone.replace(/^91/,'') ||
+      phone===u.phone.replace(/^91/,'')
+    );
     if(!profile){
-      showToast('Phone not registered. Contact Prasad.'); await signOut(auth);
-      currentUser=null; btn.disabled=false; btn.textContent='Verify OTP'; return;
+      showToast('Number not registered. Contact Prasad to get access.');
+      btn.disabled=false; btn.textContent='Login';
+      return;
     }
-    currentProfile=profile;
+    // Number found — log in directly
+    currentUser = {phoneNumber:'+'+phone};
+    currentProfile = profile;
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app-screen').style.display='block';
     updateHeader();
-    // Seed all users to Firestore if not yet done (first time only)
     await seedUsersIfNeeded();
     subscribeEscalations();
     await loadUsers();
     showToast('Welcome, '+profile.name.split(' ')[0]+'!');
   }catch(e){
-    showToast('Invalid OTP. Try again.');
-    btn.disabled=false; btn.textContent='Verify OTP';
+    console.error('Login error:',e);
+    showToast('Error logging in. Check your connection.');
+    btn.disabled=false; btn.textContent='Login';
   }
 }
 
 async function logout(){
-  await signOut(auth);
   currentUser=null; currentProfile=null; allEscalations=[]; allUsers=[];
   document.getElementById('app-screen').style.display='none';
   document.getElementById('login-screen').style.display='block';
   document.getElementById('step-phone').style.display='block';
-  document.getElementById('step-otp').style.display='none';
+  
   document.getElementById('login-phone').value='';
   document.getElementById('login-otp').value='';
   const lb = document.getElementById('login-btn');
@@ -1120,7 +1101,7 @@ if(IS_LOCAL){
 }
 
 // Expose globals
-window.showPg=showPg; window.toggleDD=toggleDD; window.syncFilter=syncFilter; window.clearFilters=clearFilters; window.populateFYDropdown=populateFYDropdown; window.startLogin=startLogin; window.verifyOTP=verifyOTP; window.logout=logout;
+window.showPg=showPg; window.toggleDD=toggleDD; window.syncFilter=syncFilter; window.clearFilters=clearFilters; window.populateFYDropdown=populateFYDropdown; window.logout=logout;
 window.submitEsc=submitEsc; window.resetRaise=resetRaise; window.openWA=openWA; window.sendWA=sendWA; window.quickWA=quickWA;
 window.openAckM=openAckM; window.submitAck=submitAck;
 window.openStatusM=openStatusM; window.saveStatus=saveStatus; window.updateField=updateField;
@@ -1156,7 +1137,7 @@ body{font-family:var(--font);background:var(--grey);color:var(--text);min-height
 .login-btn{width:100%;padding:14px;border-radius:10px;border:none;background:var(--navy);color:#fff;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;margin-top:14px;transition:.15s}
 .login-btn:hover{background:var(--teal)}.login-btn:disabled{opacity:.6;cursor:not-allowed}
 .login-note{font-size:11px;color:var(--muted);margin-top:12px;text-align:center;line-height:1.5}
-#recaptcha-container{margin:12px 0;display:flex;justify-content:center}
+
 
 /* HEADER */
 .hdr{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(31,56,100,.25)}
@@ -1321,18 +1302,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     </div>
     <div id="step-phone">
       <label class="login-label">Mobile Number</label>
-      <input type="tel" id="login-phone" class="login-input" placeholder="e.g. 9876543210" inputmode="numeric">
-      <div id="recaptcha-container"></div>
-      <button class="login-btn" id="login-btn" onclick="startLogin()">Send OTP</button>
-      <div class="login-note">Enter 10-digit number without country code.<br>OTP will be sent via SMS.</div>
-    </div>
-    <div id="step-otp" style="display:none">
-      <label class="login-label">Enter OTP</label>
-      <input type="number" id="login-otp" class="login-input" placeholder="6-digit OTP" inputmode="numeric">
-      <button class="login-btn" id="otp-btn" onclick="verifyOTP()">Verify OTP</button>
-      <div class="login-note" style="margin-top:12px">
-        <button onclick="document.getElementById('step-otp').style.display='none';document.getElementById('step-phone').style.display='block';document.getElementById('login-btn').disabled=false;document.getElementById('login-btn').textContent='Send OTP';" style="background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer">← Change number</button>
-      </div>
+      <input type="tel" id="login-phone" class="login-input" placeholder="e.g. 9876543210" inputmode="numeric"
+        onkeydown="if(event.key==='Enter') startLogin()">
+      <button class="login-btn" id="login-btn" onclick="startLogin()">Login</button>
+      <div class="login-note">Enter your registered 10-digit mobile number.<br>No OTP required — your number is your identity.</div>
     </div>
   </div>
 </div>

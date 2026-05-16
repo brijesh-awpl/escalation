@@ -286,6 +286,8 @@ async function startLogin(){
     );
     if(!profile){
       showToast('Number not registered. Contact Prasad to get access.');
+    const errEl=document.getElementById('login-error');
+    if(errEl){errEl.textContent='This number is not registered in AWPL Escalation System. Contact Prasad Lanke to get access.';errEl.style.display='block';}
       btn.disabled=false; btn.textContent='Login';
       return;
     }
@@ -1101,7 +1103,7 @@ if(IS_LOCAL){
 }
 
 // Expose globals
-window.showPg=showPg; window.toggleDD=toggleDD; window.syncFilter=syncFilter; window.clearFilters=clearFilters; window.populateFYDropdown=populateFYDropdown; window.logout=logout;
+window.showPg=showPg; window.toggleDD=toggleDD; window.syncFilter=syncFilter; window.clearFilters=clearFilters; window.populateFYDropdown=populateFYDropdown; window.startLogin=startLogin; window.logout=logout;
 window.submitEsc=submitEsc; window.resetRaise=resetRaise; window.openWA=openWA; window.sendWA=sendWA; window.quickWA=quickWA;
 window.openAckM=openAckM; window.submitAck=submitAck;
 window.openStatusM=openStatusM; window.saveStatus=saveStatus; window.updateField=updateField;
@@ -1303,8 +1305,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div id="step-phone">
       <label class="login-label">Mobile Number</label>
       <input type="tel" id="login-phone" class="login-input" placeholder="e.g. 9876543210" inputmode="numeric"
-        onkeydown="if(event.key==='Enter') startLogin()">
+        onkeydown="if(event.key==='Enter') startLogin()"
+        onfocus="const e=document.getElementById('login-error');if(e)e.style.display='none'">
       <button class="login-btn" id="login-btn" onclick="startLogin()">Login</button>
+      <div id="login-error" style="display:none;background:#FCE4D6;color:#843C0C;border-radius:8px;padding:10px 12px;font-size:13px;margin-top:10px;font-weight:500"></div>
       <div class="login-note">Enter your registered 10-digit mobile number.<br>No OTP required — your number is your identity.</div>
     </div>
   </div>

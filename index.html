@@ -36,23 +36,70 @@ let currentPage = 'dashboard';
 // ── DEMO MODE (for local testing without Firebase login) ──────────────────────
 const IS_LOCAL = window.location.protocol === 'file:' || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
-const DEMO_PROFILE = {phone:'919999900000',name:'Brijesh Khanderia (CEO)',role:'CEO',email:'brij@armwelders.com',wa:'919999900000',access:'superadmin',color:'#C00000'};
+const DEMO_PROFILE = {phone:'919822039805',name:'Brijesh Khanderia (CEO)',role:'CEO',email:'brij@armwelders.com',wa:'919822039805',access:'superadmin',loginCode:'123456',color:'#C00000'};
 
 const DEMO_USERS = [
-  {phone:'919999900000',name:'Brijesh Khanderia (CEO)',role:'CEO',email:'brij@armwelders.com',wa:'919999900000',access:'superadmin',color:'#C00000'},
-  {phone:'919999900001',name:'Prasad Lanke (EA)',role:'EA / Admin',email:'prasad@armwelders.com',wa:'919999900001',access:'admin',color:'#1F3864'},
-  {phone:'919999900002',name:'Sanket (PM)',role:'Project Manager',email:'sanket@armwelders.com',wa:'919999900002',access:'member',color:'#2E75B6'},
-  {phone:'919999900003',name:'Lalit Sakunde (PM)',role:'Project Manager',email:'lalit@armwelders.com',wa:'919999900003',access:'member',color:'#4472C4'},
-  {phone:'919999900004',name:'Yogesh Baral (PM)',role:'Project Manager',email:'ybaral@armwelders.com',wa:'919999900004',access:'member',color:'#5B9BD5'},
-  {phone:'919999900005',name:'Yogesh Bhore (PM)',role:'Project Manager',email:'ybhore@armwelders.com',wa:'919999900005',access:'member',color:'#70AD47'},
-  {phone:'919999900006',name:'Avinash (Plant Head)',role:'Plant Head',email:'avinash@armwelders.com',wa:'919999900006',access:'member',color:'#0F4761'},
-  {phone:'919999900007',name:'Hemant Koppad (Engg)',role:'Engineering HOD',email:'hemant@armwelders.com',wa:'919999900007',access:'member',color:'#833C11'},
-  {phone:'919999900008',name:'Sachin Jadhav (Purchase)',role:'Purchase HOD',email:'sachin@armwelders.com',wa:'919999900008',access:'member',color:'#375623'},
-  {phone:'919999900009',name:'Prasad Shinde (Quality)',role:'Quality HOD',email:'pshinde@armwelders.com',wa:'919999900009',access:'member',color:'#7030A0'},
-  {phone:'919999900010',name:'Sreeja Nair (Sales)',role:'Sales Head',email:'sreeja@armwelders.com',wa:'919999900010',access:'member',color:'#C55A11'},
-  {phone:'919999900011',name:'Dinesh Balghare (Finance)',role:'Finance Head',email:'dinesh@armwelders.com',wa:'919999900011',access:'member',color:'#3B1F6B'},
-  {phone:'919999900012',name:'Vaibhav Limaye (Service)',role:'Service HOD',email:'vaibhav@armwelders.com',wa:'919999900012',access:'member',color:'#185A8D'},
+  {phone:'919822039805',name:'Brijesh Khanderia (CEO)',role:'CEO',email:'brij@armwelders.com',wa:'919822039805',access:'superadmin',loginCode:'123456',color:'#C00000'},
+  {phone:'918308800925',name:'Prasad Lanke (EA)',role:'EA / Admin',email:'prasad@armwelders.com',wa:'918308800925',access:'admin',loginCode:'123456',color:'#1F3864'},
+  {phone:'917385556909',name:'Avinash Shelke',role:'Plant head',email:'bu.product@armwelders.com',wa:'917385556909',access:'member',loginCode:'710787',color:'#0F4761'},
+  {phone:'918956213674',name:'Yogesh Baral',role:'PM',email:'planning1@armwelders.com',wa:'918956213674',access:'member',loginCode:'560401',color:'#2E75B6'},
+  {phone:'919822684247',name:'Yogesh Bhore',role:'PM',email:'planning@armwelders.com',wa:'919822684247',access:'member',loginCode:'523130',color:'#2E75B6'},
+  {phone:'919028840927',name:'Sanket Dhanawade',role:'PM',email:'project.support2@armwelders.com',wa:'919028840927',access:'member',loginCode:'225424',color:'#2E75B6'},
+  {phone:'918956074292',name:'Lalit Sakunde',role:'PM',email:'project.support3@armwelders.com',wa:'918956074292',access:'member',loginCode:'927184',color:'#2E75B6'},
+  {phone:'918855070370',name:'Sanmay Kulkarni',role:'PM',email:'project.support1@armwelders.com',wa:'918855070370',access:'member',loginCode:'585577',color:'#2E75B6'},
+  {phone:'917249666441',name:'Santosh Chavan',role:'PUR',email:'purchase.auto@armwelders.com',wa:'917249666441',access:'member',loginCode:'559891',color:'#375623'},
+  {phone:'918308800944',name:'Sachin Jadhav (Pur)',role:'PUR',email:'purchase.bo@armwelders.com',wa:'918308800944',access:'member',loginCode:'350089',color:'#375623'},
+  {phone:'918999135507',name:'Adesh Junghare',role:'PROD',email:'production.prod@armwelders.com',wa:'918999135507',access:'member',loginCode:'460464',color:'#7F4F24'},
+  {phone:'919028840928',name:'Seetaram Hajeri',role:'PROD',email:'production.auto@armwelders.com',wa:'919028840928',access:'member',loginCode:'997513',color:'#7F4F24'},
+  {phone:'918407906861',name:'Samadhan Jadhav',role:'PROD',email:'electricals@armwelders.com',wa:'918407906861',access:'member',loginCode:'279855',color:'#7F4F24'},
+  {phone:'919673969555',name:'Shrikant Jadhav',role:'MACHINE SHOP',email:'machine.con@armwelders.com',wa:'919673969555',access:'member',loginCode:'260137',color:'#4A235A'},
+  {phone:'918208745234',name:'Pavan Varade',role:'STORE',email:'store@armwelders.com',wa:'918208745234',access:'member',loginCode:'826825',color:'#6E2F1A'},
+  {phone:'919881611123',name:'Pradeep Sawant',role:'STORE',email:'store1@armwelders.com',wa:'919881611123',access:'member',loginCode:'946530',color:'#6E2F1A'},
+  {phone:'917758938839',name:'Sreeja Nair',role:'SALES',email:'bd@armwelders.com',wa:'917758938839',access:'member',loginCode:'584599',color:'#C55A11'},
+  {phone:'919881009453',name:'Chandrakant Jadhav',role:'SALES',email:'jadhav.cp@armwelders.com',wa:'919881009453',access:'member',loginCode:'655975',color:'#C55A11'},
+  {phone:'919975922259',name:'Saurabh Gupta',role:'SALES',email:'saleshead.north@armwelders.com',wa:'919975922259',access:'member',loginCode:'598098',color:'#C55A11'},
+  {phone:'918484027019',name:'Arvind Pawar',role:'SALES',email:'sales.west@armwelders.com',wa:'918484027019',access:'member',loginCode:'290325',color:'#C55A11'},
+  {phone:'919850817158',name:'Rajesh Thorave',role:'SALES',email:'sales.pune@armwelders.com',wa:'919850817158',access:'member',loginCode:'853980',color:'#C55A11'},
+  {phone:'918956213673',name:'Abdul Hameed',role:'SALES',email:'sales.south@armwelders.com',wa:'918956213673',access:'member',loginCode:'291585',color:'#C55A11'},
+  {phone:'919511910792',name:'Ganesh Kanchan',role:'SALES',email:'sales_b2b@armwelders.com',wa:'919511910792',access:'member',loginCode:'169483',color:'#C55A11'},
+  {phone:'919922447215',name:'Pallavi Chaudhari',role:'SALES',email:'marketing@armwelders.com',wa:'919922447215',access:'member',loginCode:'117178',color:'#C55A11'},
+  {phone:'918308800949',name:'Vandana Gujar',role:'SALES',email:'sales@armwelders.com',wa:'918308800949',access:'member',loginCode:'872544',color:'#C55A11'},
+  {phone:'919689933244',name:'Levin Chalarakal',role:'SALES',email:'application3@armwelders.com',wa:'919689933244',access:'member',loginCode:'911219',color:'#C55A11'},
+  {phone:'919049947985',name:'Pradhnya Patil',role:'SALES',email:'application1@armwelders.com',wa:'919049947985',access:'member',loginCode:'661849',color:'#C55A11'},
+  {phone:'919881156847',name:'Vishal Pathare',role:'HR',email:'hr@armwelders.com',wa:'919881156847',access:'member',loginCode:'792870',color:'#5D6D7E'},
+  {phone:'918308800901',name:'Kartik Kale',role:'HR',email:'hr@armwelders.com',wa:'918308800901',access:'member',loginCode:'602296',color:'#5D6D7E'},
+  {phone:'918308800938',name:'Arti Bhalerao',role:'BU SPARES',email:'arti.bhalerao@armwelders.com',wa:'918308800938',access:'member',loginCode:'823854',color:'#839192'},
+  {phone:'919359259384',name:'Ram Gardi',role:'SPARES',email:'spares@armwelders.com',wa:'919359259384',access:'member',loginCode:'474548',color:'#839192'},
+  {phone:'917410111580',name:'Ganesh Shinde',role:'PUR',email:'purchase.sp@armwelders.com',wa:'917410111580',access:'member',loginCode:'211513',color:'#375623'},
+  {phone:'918308800931',name:'Hemant Koppad',role:'ENGG HOD',email:'hemant.k@armwelders.com',wa:'918308800931',access:'member',loginCode:'311932',color:'#833C11'},
+  {phone:'919503597697',name:'Sushil Bharambe',role:'ENGG',email:'sushil.bharambe@armwelders.com',wa:'919503597697',access:'member',loginCode:'648084',color:'#A04000'},
+  {phone:'919850944197',name:'Yuvraj Bendale',role:'ENGG',email:'design@armwelders.com',wa:'919850944197',access:'member',loginCode:'235510',color:'#A04000'},
+  {phone:'919766468649',name:'Abhijeet Bansude',role:'ENGG',email:'design2@armwelders.com',wa:'919766468649',access:'member',loginCode:'999641',color:'#A04000'},
+  {phone:'919822684248',name:'Mahesh Konshette',role:'ENGG',email:'design.elec1@armwelders.com',wa:'919822684248',access:'member',loginCode:'608194',color:'#A04000'},
+  {phone:'919552542001',name:'Imran Shaikh',role:'ENGG',email:'design.auto1@armwelders.com',wa:'919552542001',access:'member',loginCode:'196411',color:'#A04000'},
+  {phone:'919766141512',name:'Nikhil Yadav',role:'ENGG',email:'design.auto2@armwelders.com',wa:'919766141512',access:'member',loginCode:'471002',color:'#A04000'},
+  {phone:'919665020124',name:'Umesh Poke',role:'ENGG',email:'design.auto@armwelders.com',wa:'919665020124',access:'member',loginCode:'352868',color:'#A04000'},
+  {phone:'919028495653',name:'Sachin Jadhav (PLC)',role:'PLC',email:'automation@armwelders.com',wa:'919028495653',access:'member',loginCode:'153948',color:'#1A5276'},
+  {phone:'919970291125',name:'Manoj Bakde',role:'PLC',email:'automation2@armwelders.com',wa:'919970291125',access:'member',loginCode:'884375',color:'#1A5276'},
+  {phone:'919028495651',name:'Shreyas Gunjal',role:'IT',email:'it@armwelders.com',wa:'919028495651',access:'member',loginCode:'202059',color:'#117A65'},
+  {phone:'919881143959',name:'Santosh Yadav',role:'APP',email:'application@armwelders.com',wa:'919881143959',access:'member',loginCode:'721654',color:'#6C3483'},
+  {phone:'917757952680',name:'Vidyanand Kamble',role:'APP',email:'application2@armwelders.com',wa:'917757952680',access:'member',loginCode:'756650',color:'#6C3483'},
+  {phone:'919850887171',name:'Vaibhav Limaye',role:'SER HOD',email:'ser.mgr@armwelders.com',wa:'919850887171',access:'member',loginCode:'473340',color:'#185A8D'},
+  {phone:'919850817150',name:'Shivraj Patil',role:'SER',email:'service@armwelders.com',wa:'919850817150',access:'member',loginCode:'662253',color:'#1B4F72'},
+  {phone:'918007766345',name:'Dhiraj Mane',role:'SER',email:'support.service@armwelders.com',wa:'918007766345',access:'member',loginCode:'475476',color:'#1B4F72'},
+  {phone:'918956588067',name:'Prasad Shinde',role:'QUALITY',email:'quality@armwelders.com',wa:'918956588067',access:'member',loginCode:'957652',color:'#7D6608'},
+  {phone:'918999696595',name:'Aditya Patil',role:'QUALITY',email:'quality@armwelders.com',wa:'918999696595',access:'member',loginCode:'133548',color:'#7D6608'},
+  {phone:'918698522329',name:'Sunil Gurav',role:'QUALITY',email:'quality@armwelders.com',wa:'918698522329',access:'member',loginCode:'863450',color:'#7D6608'},
+  {phone:'919021272705',name:'Ketan Pawar',role:'QUALITY',email:'quality@armwelders.com',wa:'919021272705',access:'member',loginCode:'993257',color:'#7D6608'},
+  {phone:'918668459549',name:'Vikas Gavhane',role:'QUALITY',email:'quality@armwelders.com',wa:'918668459549',access:'member',loginCode:'440834',color:'#7D6608'},
+  {phone:'919373218016',name:'Omkar Kokate',role:'QUALITY',email:'quality@armwelders.com',wa:'919373218016',access:'member',loginCode:'555670',color:'#7D6608'},
+  {phone:'919921681558',name:'Gajendra Patil',role:'QUALITY',email:'quality@armwelders.com',wa:'919921681558',access:'member',loginCode:'341010',color:'#7D6608'},
+  {phone:'919762302299',name:'Ganesh Kumbhar',role:'QUALITY',email:'quality@armwelders.com',wa:'919762302299',access:'member',loginCode:'649390',color:'#7D6608'},
+  {phone:'919284130092',name:'Amit Vighne',role:'QUALITY',email:'quality@armwelders.com',wa:'919284130092',access:'member',loginCode:'987654',color:'#7D6608'},
 ];
+
+// SEED_USERS — seeded to Firestore on first login if users collection is empty
+const SEED_USERS = DEMO_USERS;
 
 const DEMO_ESCALATIONS = [
   {id:'demo1',srNo:'AW/ES/0426/000001',dateRaised:'2026-04-21',weekNo:17,raisedBy:'Sanket (PM)',against:'Hemant Koppad (Engg)',dependencyOwner:'Yuvraj',project:'AW-112 / Milestone adherence',what:'Electrical drawings release — mechanical + electrical + PLC complete set',agreedDate:'2026-04-18',channel:'WhatsApp + Email (5-line format)',impact:'Assembly cannot start. FAT date 25 Apr at risk.',ackByHOD:'N',ackResponse:'',ackDate:'',commitDate:'',deadlinePassed:'Yes',status:'OVERDUE',resolvedDate:'',type:'Pending',capSubmitted:'N',capDueDate:'',capSummary:'',raisedByPhone:'919999900002'},
@@ -154,6 +201,22 @@ async function loadUsers(){
   return allUsers;
 }
 
+async function seedUsersIfNeeded(){
+  if(IS_LOCAL) return;
+  const snap = await getDocs(collection(db,'users'));
+  if(snap.size > 2) return; // already seeded (more than just CEO+Prasad)
+  showToast('Setting up user database — first time only...');
+  for(const u of SEED_USERS){
+    // Don't overwrite CEO and Prasad who were manually added
+    const exists = snap.docs.find(d=>d.id===u.phone);
+    if(!exists){
+      await setDoc(doc(db,'users',u.phone), u);
+    }
+  }
+  await loadUsers();
+  showToast('All '+SEED_USERS.length+' users added to system');
+}
+
 function subscribeEscalations(){
   if(IS_LOCAL){ checkOverdue(); renderCurrentPage(); return; }
   const q = query(collection(db,'escalations'), orderBy('dateRaised','desc'));
@@ -250,6 +313,8 @@ async function verifyOTP(){
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app-screen').style.display='block';
     updateHeader();
+    // Seed all users to Firestore if not yet done (first time only)
+    await seedUsersIfNeeded();
     subscribeEscalations();
     await loadUsers();
     showToast('Welcome, '+profile.name.split(' ')[0]+'!');
@@ -922,15 +987,29 @@ function exportExcel(){
   function deptMatch(str,dept){
     if(!str) return false;
     const s=str.toLowerCase(), d=dept.toLowerCase();
-    if(d==='project management') return s.includes('pm')||s.includes('project')||s.includes('sanket')||s.includes('lalit')||s.includes('yogesh');
-    if(d==='plant head') return s.includes('plant head')||s.includes('avinash');
-    if(d==='engineering') return s.includes('engg')||s.includes('engineering')||s.includes('hemant');
-    if(d==='purchase') return s.includes('purchase')||s.includes('sachin');
-    if(d==='finance') return s.includes('finance')||s.includes('dinesh');
-    if(d==='sales') return s.includes('sales')||s.includes('sreeja');
-    if(d==='quality') return s.includes('quality')||s.includes('prasad shinde');
-    if(d==='service') return s.includes('service')||s.includes('vaibhav');
-    return s.includes(d);
+    // Map dept codes to name patterns
+    const maps = {
+      'pm': ['pm','project','sanket','lalit','yogesh','sanmay'],
+      'plant head': ['plant head','avinash'],
+      'pur': ['pur','purchase','sachin','santosh chavan','ganesh shinde'],
+      'prod': ['prod','production','adesh','seetaram','samadhan'],
+      'machine shop': ['machine shop','shrikant'],
+      'store': ['store','pavan varade','pradeep sawant'],
+      'sales': ['sales','sreeja','chandrakant','saurabh','arvind','rajesh','abdul','ganesh kanchan','pallavi','vandana','levin','pradhnya'],
+      'hr': ['hr','vishal pathare','kartik'],
+      'bu spares': ['bu spares','arti bhalerao'],
+      'spares': ['spares','ram gardi'],
+      'engg hod': ['engg hod','hemant koppad'],
+      'engg': ['engg','engineering','sushil','yuvraj','abhijeet','mahesh konshette','imran','nikhil yadav','umesh poke'],
+      'plc': ['plc','sachin jadhav (plc)','manoj bakde'],
+      'it': ['it','shreyas'],
+      'app': ['app','application','santosh yadav','vidyanand'],
+      'ser hod': ['ser hod','vaibhav limaye'],
+      'ser': ['ser','service','shivraj','dhiraj mane'],
+      'quality': ['quality','prasad shinde','aditya patil','sunil gurav','ketan','vikas','omkar','gajendra','ganesh kumbhar','amit'],
+    };
+    const patterns = maps[d] || [d];
+    return patterns.some(p=>s.includes(p));
   }
 
   const patHdr=['Department','Times Raised Against','Times Raised By','Resolved','Not Started','In Progress','Overdue','Escalated to CEO','CAPs Submitted','Review Needed?'];
@@ -1384,14 +1463,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <span style="font-size:10px;color:var(--muted)">▾</span>
         </div>
         <div class="ms-dd" id="ms-dp-dd">
-          <label class="ms-item"><input type="checkbox" value="Engineering" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Engineering</label>
-          <label class="ms-item"><input type="checkbox" value="Purchase" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Purchase</label>
-          <label class="ms-item"><input type="checkbox" value="Finance" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Finance</label>
-          <label class="ms-item"><input type="checkbox" value="Sales" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Sales</label>
-          <label class="ms-item"><input type="checkbox" value="Quality" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Quality</label>
-          <label class="ms-item"><input type="checkbox" value="Service" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Service</label>
-          <label class="ms-item"><input type="checkbox" value="Plant Head" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Plant Head</label>
-          <label class="ms-item"><input type="checkbox" value="Project Management" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Project Management</label>
+          <label class="ms-item"><input type="checkbox" value="Plant head" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Plant Head</label>
+          <label class="ms-item"><input type="checkbox" value="PM" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Project Management (PM)</label>
+          <label class="ms-item"><input type="checkbox" value="PUR" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Purchase (PUR)</label>
+          <label class="ms-item"><input type="checkbox" value="PROD" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Production (PROD)</label>
+          <label class="ms-item"><input type="checkbox" value="MACHINE SHOP" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Machine Shop</label>
+          <label class="ms-item"><input type="checkbox" value="STORE" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Stores</label>
+          <label class="ms-item"><input type="checkbox" value="SALES" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Sales</label>
+          <label class="ms-item"><input type="checkbox" value="HR" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> HR</label>
+          <label class="ms-item"><input type="checkbox" value="BU SPARES" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> BU Spares</label>
+          <label class="ms-item"><input type="checkbox" value="SPARES" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Spares</label>
+          <label class="ms-item"><input type="checkbox" value="ENGG HOD" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Engineering HOD</label>
+          <label class="ms-item"><input type="checkbox" value="ENGG" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Engineering (ENGG)</label>
+          <label class="ms-item"><input type="checkbox" value="PLC" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> PLC / Controls</label>
+          <label class="ms-item"><input type="checkbox" value="IT" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> IT</label>
+          <label class="ms-item"><input type="checkbox" value="APP" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Applications (APP)</label>
+          <label class="ms-item"><input type="checkbox" value="SER HOD" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Service HOD</label>
+          <label class="ms-item"><input type="checkbox" value="SER" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Service</label>
+          <label class="ms-item"><input type="checkbox" value="QUALITY" onchange="syncFilter('ms-dp-dd','ms-dp-lbl','All departments');renderLog()"> Quality</label>
         </div>
       </div>
     </div>
